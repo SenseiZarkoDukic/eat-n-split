@@ -23,14 +23,18 @@ export default function App() {
   const data = initialFriends;
   return (
     <div className="app">
-      <FriendsList data={data} />
+      <div className="sidebar">
+        <FriendsList data={data} />
+        <FormAddFriend />
+        <Button>Add friend</Button>
+      </div>
     </div>
   );
 }
 
 function FriendsList({ data }) {
   return (
-    <div className="sidebar">
+    <div>
       <ul>
         {data &&
           data.map((f) => (
@@ -42,7 +46,6 @@ function FriendsList({ data }) {
             />
           ))}
       </ul>
-      <button className="button">Add friend</button>
     </div>
   );
 }
@@ -63,8 +66,24 @@ function Friend({ key, name, src, balance }) {
             <p>You and {name} are even</p>
           )}
         </div>
-        <button className="button">Select</button>
+        <Button>Select</Button>
       </li>
     </>
+  );
+}
+
+function Button({ children }) {
+  return <button className="button">{children}</button>;
+}
+
+function FormAddFriend() {
+  return (
+    <form className="form-add-friend">
+      <label>🧑‍🤝‍🧑 Friend name</label>
+      <input type="text" />
+      <label>🖼️ Image URL</label>
+      <input type="text" />
+      <Button>Add</Button>
+    </form>
   );
 }
