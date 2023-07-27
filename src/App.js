@@ -18,3 +18,37 @@ const initialFriends = [
     balance: 0,
   },
 ];
+
+export default function App() {
+  return (
+    <div className="app">
+      <FriendsList />
+    </div>
+  );
+}
+
+function FriendsList() {
+  return (
+    <div className="sidebar">
+      <ul>
+        <Friend />
+      </ul>
+    </div>
+  );
+}
+
+function Friend() {
+  return (
+    <>
+      <li>
+        <img src="" alt="" />{" "}
+        <div>
+          <h3>Name</h3>
+          <p>You owe clark 7€</p>
+        </div>
+        <button>Select</button>
+      </li>
+      <button>Add friend</button>
+    </>
+  );
+}
