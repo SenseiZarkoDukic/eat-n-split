@@ -20,35 +20,51 @@ const initialFriends = [
 ];
 
 export default function App() {
+  const data = initialFriends;
   return (
     <div className="app">
-      <FriendsList />
+      <FriendsList data={data} />
     </div>
   );
 }
 
-function FriendsList() {
+function FriendsList({ data }) {
   return (
     <div className="sidebar">
       <ul>
-        <Friend />
+        {data &&
+          data.map((f) => (
+            <Friend
+              key={f.id}
+              name={f.name}
+              src={f.image}
+              balance={f.balance}
+            />
+          ))}
       </ul>
+      <button className="button">Add friend</button>
     </div>
   );
 }
 
-function Friend() {
+function Friend({ key, name, src, balance }) {
   return (
     <>
       <li>
-        <img src="" alt="" />{" "}
+        <img src={src} alt={name} />{" "}
         <div>
-          <h3>Name</h3>
-          <p>You owe clark 7€</p>
+          <h3>{name}</h3>
+
+          {balance > 0 ? (
+            <p className="green">{`${name} owes you ${balance}€`}</p>
+          ) : balance < 0 ? (
+            <p className="red">{`You owe ${name} ${Math.abs(balance)}€`}</p>
+          ) : (
+            <p>You and {name} are even</p>
+          )}
         </div>
-        <button>Select</button>
+        <button className="button">Select</button>
       </li>
-      <button>Add friend</button>
     </>
   );
 }
