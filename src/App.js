@@ -35,12 +35,11 @@ export default function App() {
   }
   const data = initialFriends;
   const [newFriend, setNewFriend] = useState("");
-  const friends = [...data, newFriend];
-  console.log(friends);
+
   return (
     <div className="app">
       <div className="sidebar">
-        <FriendsList friends={friends} onShowAddFriend={setShowAddFriend} />
+        <FriendsList data={data} onShowAddFriend={setShowAddFriend} />
         {showAddFriend && (
           <FormAddFriend
             data={data}
@@ -58,11 +57,11 @@ export default function App() {
   );
 }
 
-function FriendsList({ friends }) {
+function FriendsList({ data }) {
   return (
     <div>
       <ul>
-        {friends.map((friend) => (
+        {data.map((friend) => (
           <Friend
             key={friend.id}
             name={friend.name}
@@ -104,6 +103,9 @@ function FormAddFriend({ data, onNewFriend }) {
 
   function handleSubmit(e) {
     e.preventDefault();
+
+    if (!name || !image) return;
+    
     const id = crypto.randomUUID();
     const newFriend = {
       id,
