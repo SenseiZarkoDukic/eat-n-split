@@ -31,36 +31,42 @@ function Button({ children, onClick }) {
 export default function App() {
   const [friends, setFriends] = useState(initialFriends);
   const [showAddFriend, setShowAddFriend] = useState(false);
+  const [selectedFriend, setSelectedFriend] = useState(null);
+
+  function handleSelection(friend) {
+    setSelectedFriend(friend);
+  }
   function handleShowAddFriend() {
     setShowAddFriend((show) => !show);
   }
-  function handleAddFriend (friend) {
-    setFriends(friends=>[...friends, friend])
-    setShowAddFriend(false)
+  function handleAddFriend(friend) {
+    setFriends((friends) => [...friends, friend]);
+    setShowAddFriend(false);
   }
 
   return (
     <div className="app">
       <div className="sidebar">
-        <FriendsList friends={friends} onShowAddFriend={setShowAddFriend} />
+        <FriendsList
+          friends={friends}
+          onShowAddFriend={setShowAddFriend}
+          onSelection={handleSelection}
+          selectedFriend={selectedFriend}
+        />
         {showAddFriend && (
-          <FormAddFriend
-            
-            onAddFriends={handleAddFriend}
-            friends={friends}
-          />
+          <FormAddFriend onAddFriends={handleAddFriend} friends={friends} />
         )}
 
         <Button onClick={handleShowAddFriend}>
           {!showAddFriend ? "Add friend" : "Close"}
         </Button>
       </div>
-      <FormSplitBill />
+      {selectedFriend && <FormSplitBill selectedFriend={selectedFriend} />}
     </div>
   );
 }
 
-function FriendsList({ friends, onFriends }) {
+function FriendsList({ friends, onSelection, selectedFriend }) {
   return (
     <div>
       <ul>
@@ -71,6 +77,8 @@ function FriendsList({ friends, onFriends }) {
             src={friend.image}
             balance={friend.balance}
             friend={friend}
+            onSelection={onSelection}
+            selectedFriend={selectedFriend}
           />
         ))}
       </ul>
@@ -78,7 +86,7 @@ function FriendsList({ friends, onFriends }) {
   );
 }
 
-function Friend({ name, src, balance }) {
+function Friend({ friend, name, src, balance, onSelection, selectedFriend }) {
   return (
     <>
       <li>
@@ -94,7 +102,7 @@ function Friend({ name, src, balance }) {
             <p>You and {name} are even</p>
           )}
         </div>
-        <Button>Select</Button>
+        <Button onClick={() => onSelection(friend)}>select</Button>
       </li>
     </>
   );
@@ -117,12 +125,11 @@ function FormAddFriend({ friends, onAddFriends }) {
       balance: 0,
     };
     onAddFriends(newFriend);
-    console.log(newFriend);
 
     setName("");
     setImage("https://i.pravatar.cc/48");
   }
-  
+
   return (
     <form className="form-add-friend" onSubmit={handleSubmit}>
       <label>🧑‍🤝‍🧑 Friend name</label>
@@ -142,23 +149,25 @@ function FormAddFriend({ friends, onAddFriends }) {
   );
 }
 
-function FormSplitBill(friend) {
+function FormSplitBill({ selectedFriend }) {
   return (
-    <form className="form-split-bill">
-      <h2>SPLIT A BILL WITH SARAH</h2>
-      <label>💰 Bill value</label>
-      <input type="text" />
-      <label>🧍‍♀️ Your expense</label>
-      <input type="text" />
+    <>
+      <form className="form-split-bill">
+        <h2>SPLIT A BILL WITH {selectedFriend.name}</h2>
+        <label>💰 Bill value</label>
+        <input type="text" />
+        <label>🧍‍♀️ Your expense</label>
+        <input type="text" />
 
-      <label>👯‍♀️ X's expense</label>
-      <input type="text" disabled />
-      <label>🤑 Who is paying the bill?</label>
-      <select>
-        <option value="user">You</option>
-        <option value="friend">X</option>
-      </select>
-      <Button>Split bill</Button>
-    </form>
+        <label>👯‍♀️ {selectedFriend.name}'s expense</label>
+        <input type="text" disabled />
+        <label>🤑 Who is paying the bill?</label>
+        <select>
+          <option value="user">You</option>
+          <option value="friend">{selectedFriend.name}</option>
+        </select>
+        <Button>Split bill</Button>
+      </form>
+    </>
   );
 }
