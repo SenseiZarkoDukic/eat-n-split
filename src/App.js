@@ -34,7 +34,9 @@ export default function App() {
   const [selectedFriend, setSelectedFriend] = useState(null);
 
   function handleSelection(friend) {
-    setSelectedFriend(friend);
+    // setSelectedFriend(friend);
+    setSelectedFriend((cur) => (cur?.id === friend.id ? null : friend));
+    setShowAddFriend(false);
   }
   function handleShowAddFriend() {
     setShowAddFriend((show) => !show);
@@ -87,9 +89,10 @@ function FriendsList({ friends, onSelection, selectedFriend }) {
 }
 
 function Friend({ friend, name, src, balance, onSelection, selectedFriend }) {
+  const isSelected = selectedFriend?.id === friend.id;
   return (
     <>
-      <li>
+      <li className={isSelected ? "selected" : ""}>
         <img src={src} alt={name} />{" "}
         <div>
           <h3>{name}</h3>
@@ -102,7 +105,9 @@ function Friend({ friend, name, src, balance, onSelection, selectedFriend }) {
             <p>You and {name} are even</p>
           )}
         </div>
-        <Button onClick={() => onSelection(friend)}>select</Button>
+        <Button onClick={() => onSelection(friend)}>
+          {isSelected ? "Close" : "Select"}
+        </Button>
       </li>
     </>
   );
@@ -150,12 +155,16 @@ function FormAddFriend({ friends, onAddFriends }) {
 }
 
 function FormSplitBill({ selectedFriend }) {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
   return (
     <>
-      <form className="form-split-bill">
+      <form className="form-split-bill" onSubmit={handleSubmit}>
         <h2>SPLIT A BILL WITH {selectedFriend.name}</h2>
         <label>💰 Bill value</label>
-        <input type="text" />
+        <input type="text" onChange={(e) => e.target.value} />
+
         <label>🧍‍♀️ Your expense</label>
         <input type="text" />
 
